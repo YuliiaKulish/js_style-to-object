@@ -6,23 +6,21 @@
  * @return {object}
  */
 function convertToObject(sourceString) {
-  const cssObject = {};
+  return sourceString
+    .split(';')
+    .filter((declaration) => declaration.trim())
+    .reduce((acc, declaration) => {
+      const [property, ...rest] = declaration.split(':');
+      const value = rest.join(':');
+      const prop = property && property.trim();
+      const val = value && value.trim();
 
-  const declarations = sourceString.split(';');
+      if (prop && val) {
+        acc[prop] = val;
+      }
 
-  for (const declaration of declarations) {
-    if (!declaration.trim()) {
-      continue;
-    }
-
-    const [property, value] = declaration.split(':');
-
-    if (property && value) {
-      cssObject[property.trim()] = value.trim();
-    }
-  }
-
-  return cssObject;
+      return acc;
+    }, {});
 }
 
 module.exports = convertToObject;
